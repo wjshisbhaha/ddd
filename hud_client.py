@@ -255,11 +255,6 @@ def parse_args() -> argparse.Namespace:
         default=0.2,
         help="Seconds to wait after switching configuration (default: 0.2).",
     )
-    parser.add_argument(
-        "--skip-ready-check",
-        action="store_true",
-        help="Do not send 'gin' before starting tests.",
-    )
     return parser.parse_args()
 
 
@@ -273,8 +268,6 @@ def main() -> int:
         return 2
     try:
         with HudClient(args.host, args.port, args.timeout) as client:
-            if not args.skip_ready_check and not client.camera_ready():
-                raise HudProtocolError("Camera initialization is not complete (gin returned Fail%)")
             if args.plan:
                 run_test_plan(client, load_test_plan(args.plan), args.switch_delay)
             elif args.case:
