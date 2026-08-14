@@ -65,10 +65,17 @@ class HudClient:
         if not wire_command:
             raise ValueError("Command cannot be empty")
 
-        # Configuration commands are explicitly documented with a trailing '%'.
-        # Other commands are documented without it, so preserve the caller's form.
+        # The HUD socket protocol uses '%' as its message terminator. Accept
+        # either form from callers, but always send a complete framed command.
+        if not wire_command.endswith("%"):
+            wire_command += "%"
         self._socket.sendall(wire_command.encode("utf-8"))
-        return self._receive_message()
+        try:
+            return self._receive_message()
+        except ConnectionError as exc:
+            raise ConnectionError(
+                f"HUD software closed the connection while waiting for a response to {wire_command!r}"
+            ) from exc
 
     def _receive_message(self) -> str:
         if self._socket is None:

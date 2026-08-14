@@ -50,11 +50,11 @@ class FakeHudServer:
 class HudClientTests(unittest.TestCase):
     def test_switches_configs_and_runs_measurements(self):
         replies = [
-            ("gin", "OK%"),
+            ("gin%", "OK%"),
             ("c-day%", "OK%"),
-            ("t1", "t1_Result:1 2 3,%"),
+            ("t1%", "t1_Result:1 2 3,%"),
             ("c-night%", "OK%"),
-            ("t1", "t1_Result:4 5 6,%"),
+            ("t1%", "t1_Result:4 5 6,%"),
         ]
         with FakeHudServer(replies) as server:
             with HudClient(server.host, server.port, timeout=1) as client:
@@ -73,9 +73,9 @@ class HudClientTests(unittest.TestCase):
     def test_runs_paired_cases(self):
         replies = [
             ("c-config1%", "OK%"),
-            ("t1", "t1_Result:1,%"),
+            ("t1%", "t1_Result:1,%"),
             ("c-config2%", "OK%"),
-            ("t3", "t3_Result:3,%"),
+            ("t3%", "t3_Result:3,%"),
         ]
         with FakeHudServer(replies) as server:
             with HudClient(server.host, server.port, timeout=1) as client:
@@ -100,10 +100,10 @@ class HudClientTests(unittest.TestCase):
     def test_runs_all_commands_for_each_plan_config(self):
         replies = [
             ("c-11%", "OK%"),
-            ("t24", "t24_Result:1,%"),
-            ("t1", "t1_Result:2,%"),
+            ("t24%", "t24_Result:1,%"),
+            ("t1%", "t1_Result:2,%"),
             ("c-22%", "OK%"),
-            ("t3", "t3_Result:3,%"),
+            ("t3%", "t3_Result:3,%"),
         ]
         with FakeHudServer(replies) as server:
             with HudClient(server.host, server.port, timeout=1) as client:
