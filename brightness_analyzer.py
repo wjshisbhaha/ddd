@@ -42,6 +42,7 @@ from brightness_io import (
     BRIGHTNESS_HEIGHT,
     BRIGHTNESS_WIDTH,
     convert_brightness_bin_to_txt,
+    create_corrected_brightness_txt,
     validate_brightness_bin,
 )
 
@@ -1137,6 +1138,7 @@ class MainWindow(QMainWindow):
             self.brightness_data = None
             self.corrected_data = None
             self.data_path = None
+            self.data_info_label.setText("亮度数据：未关联")
             self.corrected_info_label.setText("修正数据：未关联")
 
             if os.path.isfile(associated_bin):
@@ -1159,6 +1161,18 @@ class MainWindow(QMainWindow):
                     f"亮度数据：{os.path.basename(associated_bin)}（自动关联）\n"
                     f"尺寸：{cols} × {rows}"
                 )
+
+                if not os.path.isfile(corrected_txt):
+                    self.status_label.setText("● 正在生成修正亮度数据，请稍候…")
+                    self.corrected_info_label.setText(
+                        f"修正数据：正在生成 {os.path.basename(corrected_txt)}"
+                    )
+                    QApplication.processEvents()
+                    create_corrected_brightness_txt(
+                        associated_bin,
+                        corrected_txt,
+                        filter_size=20,
+                    )
 
             if os.path.isfile(corrected_txt):
 
